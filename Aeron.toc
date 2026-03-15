@@ -1,0 +1,6 @@
+## Interface: 120000
+## Title: My First Addon
+## Author: You
+## Version: 1.0.0
+
+Core.lua
