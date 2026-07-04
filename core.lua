@@ -18,7 +18,7 @@ f:SetScript("OnEvent", function(_, event, unit, castGUID, spellID)
 end)
 
 local frame = CreateFrame("Frame", "MyAddonFrame", UIParent)
-frame:SetSize(200, 50)
+frame:SetSize(200, 200)
 frame:SetPoint("CENTER")
 frame:SetMovable(true)
 frame:EnableMouse(true)
@@ -44,6 +44,12 @@ frame:SetScript("OnUpdate", function(self, elapse)
     local fps = GetFramerate()
     text:SetText(math.floor(fps))
 end)
+
+local button = CreateFrame("Button", "TestButton", frame, "UIPanelButtonTemplate")
+button:SetText("test")
+button:SetSize(100, 20)
+button:SetPoint("BOTTOM")
+button:SetFrameLevel(frame:GetFrameLevel() + 10)
 
 --[[
 -- widget scripts

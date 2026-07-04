@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
+  "runtime": {
+    "version": "Lua 5.1"
+  },
+  "workspace": {
+    "library": [
+      "C:/dev/WoWAPIAnnotations/vscode-wow-api/Annotations/Core/",
+      "C:/dev/WoWAPIAnnotations/vscode-wow-api/Annotations/FrameXML"
+    ],
+    "ignoreDir": [".git"]
+  },
+  "diagnostics": {
+    "globals": [
+      "C_Timer",
+      "UIParent",
+      "CreateFrame",
+      "hooksecurefunc",
+      "issecretvalue",
+      "canaccesssecrets",
+      "canaccessvalue"
+    ]
+  }
+}
