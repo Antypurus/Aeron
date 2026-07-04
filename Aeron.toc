@@ -5,3 +5,4 @@
 
 Core.lua
 characterFrame.lua
+SpellUtils.lua

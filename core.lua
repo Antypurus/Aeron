@@ -23,14 +23,6 @@ frame:SetPoint("CENTER")
 frame:SetMovable(true)
 frame:EnableMouse(true)
 frame:RegisterForDrag("LeftButton")
-frame:SetScript("OnDragStart", function(self, button)
-    self:StartMoving()
-    print("Started Dragging ", button)
-end)
-frame:SetScript("OnDragStop", function(self, button)
-    self:StopMovingOrSizing()
-    print("Stopped Dragging")
-end)
 
 -- Background
 local bg = frame:CreateTexture(nil, "BACKGROUND")
@@ -39,17 +31,43 @@ bg:SetColorTexture(0, 0, 0, 0.65)
 -- Text
 local text = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 text:SetPoint("CENTER")
-text:SetText("Hello World")
-frame:SetScript("OnUpdate", function(self, elapse)
-    local fps = GetFramerate()
-    text:SetText(math.floor(fps))
+--text:SetText("Hello World")
+--frame:SetScript("OnUpdate", function(self, elapse)
+--local fps = GetFramerate()
+--text:SetText(math.floor(fps))
+--end)
+
+frame.icon = bg
+frame:SetScript("OnReceiveDrag", function(self)
+    local type, spellIndex, bookType, spellID, baseSpellID = GetCursorInfo()
+    print("Spellbook Index: " .. spellIndex)
+    if type == "spell" and spellIndex and spellID then
+        local spellIDObt = C_SpellBook.GetSpellBookItemInfo(spellIndex, Enum.SpellBookSpellBank.Player)
+        if spellIDObt then
+            print(spellIDObt.name)
+        else
+            print("failed to get spell data from spellbook")
+            DumpPlayerSpellList()
+        end
+
+        local spellInfo = C_Spell.GetSpellInfo(spellID)
+        if spellInfo then
+            print(spellInfo.name)
+
+            print(spellInfo.iconID)
+            self.icon:SetTexture(spellInfo.iconID)
+            self.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+
+            ClearCursor()
+        end
+    end
 end)
 
-local button = CreateFrame("Button", "TestButton", frame, "UIPanelButtonTemplate")
-button:SetText("test")
-button:SetSize(100, 20)
-button:SetPoint("BOTTOM")
-button:SetFrameLevel(frame:GetFrameLevel() + 10)
+--local button = CreateFrame("Button", "TestButton", frame, "UIPanelButtonTemplate")
+--button:SetText("test")
+--button:SetSize(100, 20)
+--button:SetPoint("BOTTOM")
+--button:SetFrameLevel(frame:GetFrameLevel() + 10)
 
 --[[
 -- widget scripts
