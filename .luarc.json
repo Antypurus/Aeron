@@ -6,9 +6,13 @@
   "workspace": {
     "library": [
       "C:/dev/WoWAPIAnnotations/vscode-wow-api/Annotations/Core/",
-      "C:/dev/WoWAPIAnnotations/vscode-wow-api/Annotations/FrameXML"
+      "C:/dev/WoWAPIAnnotations/vscode-wow-api/Annotations/FrameXML",
+      "/Users/antypurus/devtools/vscode-wow-api/Annotations/Core/",
+      "/Users/antypurus/devtools/vscode-wow-api/Annotations/FrameXML/"
     ],
-    "ignoreDir": [".git"]
+    "ignoreDir": [
+      ".git"
+    ]
   },
   "diagnostics": {
     "globals": [

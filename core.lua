@@ -17,11 +17,12 @@ f:SetScript("OnEvent", function(_, event, unit, castGUID, spellID)
     end
 end)
 
-local frame = CreateFrame("Frame", "MyAddonFrame", UIParent)
+local frame = CreateFrame("Button", "MyAddonFrame", UIParent, "SecureActionButtonTemplate, BackdropTemplate")
 frame:SetSize(200, 200)
 frame:SetPoint("CENTER")
 frame:SetMovable(true)
 frame:EnableMouse(true)
+frame:RegisterForClicks("AnyDown")
 frame:RegisterForDrag("LeftButton")
 
 -- Background
@@ -37,7 +38,10 @@ text:SetPoint("CENTER")
 --text:SetText(math.floor(fps))
 --end)
 
+local ButtonData = nil
+
 frame.icon = bg
+frame.spellID = nil
 frame:SetScript("OnReceiveDrag", function(self)
     local type, spellIndex, bookType, spellID, baseSpellID = GetCursorInfo()
     print("Spellbook Index: " .. spellIndex)
@@ -55,12 +59,20 @@ frame:SetScript("OnReceiveDrag", function(self)
             print(spellInfo.name)
 
             print(spellInfo.iconID)
+            ButtonData = spellID
             self.icon:SetTexture(spellInfo.iconID)
             self.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+
+            self:SetAttribute("type", "spell")
+            self:SetAttribute("spell", spellInfo.name)
 
             ClearCursor()
         end
     end
+end)
+frame:SetScript("PostClick", function(self, button)
+    print("Button press fired", ButtonData)
+    print(issecurevariable("MyAddonFrame"))
 end)
 
 --local button = CreateFrame("Button", "TestButton", frame, "UIPanelButtonTemplate")
