@@ -67,12 +67,13 @@ frame:SetScript("OnReceiveDrag", function(self)
             self:SetAttribute("spell", spellInfo.name)
 
             ClearCursor()
+            SetBinding("ALT-K", nil)
+            local assignResult = SetBindingClick("ALT-K", self:GetName())
+            if assignResult == nil then
+                print("failed to set keybinding")
+            end
         end
     end
-end)
-frame:SetScript("PostClick", function(self, button)
-    print("Button press fired", ButtonData)
-    print(issecurevariable("MyAddonFrame"))
 end)
 
 --local button = CreateFrame("Button", "TestButton", frame, "UIPanelButtonTemplate")
