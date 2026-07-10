@@ -1,8 +1,15 @@
+AeronDB = {
+    msg = nil
+}
+AeronCharDB = {
+}
+
 local f = CreateFrame("Frame")
 
 f:RegisterEvent("PLAYER_REGEN_DISABLED") -- combat enter
 f:RegisterEvent("PLAYER_REGEN_ENABLED")  -- leaving combat
 f:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+f:RegisterEvent("PLAYER_LOGIN")
 
 f:SetScript("OnEvent", function(_, event, unit, castGUID, spellID)
     if event == "PLAYER_REGEN_DISABLED" then
@@ -14,6 +21,12 @@ f:SetScript("OnEvent", function(_, event, unit, castGUID, spellID)
     if event == "UNIT_SPELLCAST_SUCCEEDED" and unit == "player" then
         local spellName = C_Spell.GetSpellName(spellID)
         print(spellName)
+    end
+
+    if event == "PLAYER_LOGIN" then
+        if AeronDB.msg ~= nil then
+            print(AeronDB.msg)
+        end
     end
 end)
 
@@ -75,6 +88,13 @@ frame:SetScript("OnReceiveDrag", function(self)
         end
     end
 end)
+
+SLASH_SUGMA1 = "/sugma"
+SlashCmdList["SUGMA"] = function(msg)
+    print(msg)
+    AeronDB.msg = msg
+end
+
 
 --local button = CreateFrame("Button", "TestButton", frame, "UIPanelButtonTemplate")
 --button:SetText("test")

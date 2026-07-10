@@ -3,6 +3,9 @@
 ## Author: You
 ## Version: 1.0.0
 
+## SavedVariables: AeronDB
+## SavedVariablesPerCharacter: AeronCharDB
+
 Core.lua
 characterFrame.lua
 SpellUtils.lua
