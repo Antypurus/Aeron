@@ -1,4 +1,4 @@
-function SetActionButton(button, spellID)
+local function SetActionButton(button, spellID)
     local spellInfo = C_Spell.GetSpellInfo(spellID)
     if spellInfo == nil then
         return
@@ -19,6 +19,16 @@ function SetActionButton(button, spellID)
     print("action button is all setup")
 end
 
+local function FindActionSlot(spellID)
+    for i = 1, 180 do
+        local actionType, id = GetActionInfo(i)
+        if actionType == "spell" and id == spellID then
+            return i
+        end
+    end
+    return nil
+end
+
 AeronDB = {
     msg = nil,
     savedSpellID = nil
@@ -32,6 +42,7 @@ rootFrame:RegisterEvent("PLAYER_REGEN_DISABLED") -- combat enter
 rootFrame:RegisterEvent("PLAYER_REGEN_ENABLED")  -- leaving combat
 rootFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 rootFrame:RegisterEvent("PLAYER_LOGIN")
+rootFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 
 local actionButton = CreateFrame("Button", "MyAddonFrame", UIParent, "SecureActionButtonTemplate, BackdropTemplate")
 actionButton:SetSize(200, 200)
@@ -40,7 +51,14 @@ actionButton:SetMovable(true)
 actionButton:EnableMouse(true)
 actionButton:RegisterForClicks("AnyDown")
 actionButton:RegisterForDrag("LeftButton")
+actionButton.cooldown = CreateFrame("Cooldown", nil, actionButton, "CooldownFrameTemplate")
+actionButton.cooldown:SetAllPoints(actionButton)
+actionButton.cooldown:SetDrawEdge(true)
+actionButton.cooldown:SetDrawSwipe(true)
+actionButton.cooldown:SetDrawBling(true)
+actionButton.cooldown:SetHideCountdownNumbers(false)
 
+local savedSpellID = nil
 rootFrame:SetScript("OnEvent", function(_, event, unit, castGUID, spellID)
     if event == "PLAYER_REGEN_DISABLED" then
         print("Entered Combat...")
@@ -58,7 +76,23 @@ rootFrame:SetScript("OnEvent", function(_, event, unit, castGUID, spellID)
             print(AeronDB.msg)
         end
         if AeronDB.savedSpellID ~= nil then
+            savedSpellID = AeronDB.savedSpellID
             SetActionButton(actionButton, AeronDB.savedSpellID)
+        end
+    end
+
+    if event == "SPELL_UPDATE_COOLDOWN" then
+        local actionSlot = FindActionSlot(savedSpellID)
+        if actionSlot == nil then
+            print("didnt find action slot for spell id: " .. savedSpellID)
+            return
+        end
+
+        local spellCooldownDuration = C_ActionBar.GetActionCooldownDuration(actionSlot)
+        if spellCooldownDuration then
+            actionButton.cooldown:SetCooldownFromDurationObject(spellCooldownDuration)
+        else
+            actionButton.cooldown:Clear()
         end
     end
 end)
