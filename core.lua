@@ -1,17 +1,47 @@
+function SetActionButton(button, spellID)
+    local spellInfo = C_Spell.GetSpellInfo(spellID)
+    if spellInfo == nil then
+        return
+    end
+
+    button.icon:SetTexture(spellInfo.iconID)
+    button.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+
+    button:SetAttribute("type", "spell")
+    button:SetAttribute("spell", spellInfo.name)
+
+    SetBinding("ALT-K", nil)
+    local assignResult = SetBindingClick("ALT-K", button:GetName())
+    if assignResult == nil then
+        print("failed to set keybinding")
+    end
+
+    print("action button is all setup")
+end
+
 AeronDB = {
-    msg = nil
+    msg = nil,
+    savedSpellID = nil
 }
 AeronCharDB = {
 }
 
-local f = CreateFrame("Frame")
+local rootFrame = CreateFrame("Frame")
 
-f:RegisterEvent("PLAYER_REGEN_DISABLED") -- combat enter
-f:RegisterEvent("PLAYER_REGEN_ENABLED")  -- leaving combat
-f:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-f:RegisterEvent("PLAYER_LOGIN")
+rootFrame:RegisterEvent("PLAYER_REGEN_DISABLED") -- combat enter
+rootFrame:RegisterEvent("PLAYER_REGEN_ENABLED")  -- leaving combat
+rootFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+rootFrame:RegisterEvent("PLAYER_LOGIN")
 
-f:SetScript("OnEvent", function(_, event, unit, castGUID, spellID)
+local actionButton = CreateFrame("Button", "MyAddonFrame", UIParent, "SecureActionButtonTemplate, BackdropTemplate")
+actionButton:SetSize(200, 200)
+actionButton:SetPoint("CENTER")
+actionButton:SetMovable(true)
+actionButton:EnableMouse(true)
+actionButton:RegisterForClicks("AnyDown")
+actionButton:RegisterForDrag("LeftButton")
+
+rootFrame:SetScript("OnEvent", function(_, event, unit, castGUID, spellID)
     if event == "PLAYER_REGEN_DISABLED" then
         print("Entered Combat...")
     elseif event == "PLAYER_REGEN_ENABLED" then
@@ -27,23 +57,18 @@ f:SetScript("OnEvent", function(_, event, unit, castGUID, spellID)
         if AeronDB.msg ~= nil then
             print(AeronDB.msg)
         end
+        if AeronDB.savedSpellID ~= nil then
+            SetActionButton(actionButton, AeronDB.savedSpellID)
+        end
     end
 end)
 
-local frame = CreateFrame("Button", "MyAddonFrame", UIParent, "SecureActionButtonTemplate, BackdropTemplate")
-frame:SetSize(200, 200)
-frame:SetPoint("CENTER")
-frame:SetMovable(true)
-frame:EnableMouse(true)
-frame:RegisterForClicks("AnyDown")
-frame:RegisterForDrag("LeftButton")
-
 -- Background
-local bg = frame:CreateTexture(nil, "BACKGROUND")
+local bg = actionButton:CreateTexture(nil, "BACKGROUND")
 bg:SetAllPoints()
 bg:SetColorTexture(0, 0, 0, 0.65)
 -- Text
-local text = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+local text = actionButton:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 text:SetPoint("CENTER")
 --text:SetText("Hello World")
 --frame:SetScript("OnUpdate", function(self, elapse)
@@ -53,39 +78,21 @@ text:SetPoint("CENTER")
 
 local ButtonData = nil
 
-frame.icon = bg
-frame.spellID = nil
-frame:SetScript("OnReceiveDrag", function(self)
+actionButton.icon = bg
+actionButton.spellID = nil
+actionButton:SetScript("OnReceiveDrag", function(self)
     local type, spellIndex, bookType, spellID, baseSpellID = GetCursorInfo()
     print("Spellbook Index: " .. spellIndex)
     if type == "spell" and spellIndex and spellID then
         local spellIDObt = C_SpellBook.GetSpellBookItemInfo(spellIndex, Enum.SpellBookSpellBank.Player)
-        if spellIDObt then
-            print(spellIDObt.name)
-        else
+        if spellIDObt == nil then
             print("failed to get spell data from spellbook")
             DumpPlayerSpellList()
         end
 
-        local spellInfo = C_Spell.GetSpellInfo(spellID)
-        if spellInfo then
-            print(spellInfo.name)
-
-            print(spellInfo.iconID)
-            ButtonData = spellID
-            self.icon:SetTexture(spellInfo.iconID)
-            self.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
-
-            self:SetAttribute("type", "spell")
-            self:SetAttribute("spell", spellInfo.name)
-
-            ClearCursor()
-            SetBinding("ALT-K", nil)
-            local assignResult = SetBindingClick("ALT-K", self:GetName())
-            if assignResult == nil then
-                print("failed to set keybinding")
-            end
-        end
+        AeronDB.savedSpellID = spellID
+        SetActionButton(self, spellID)
+        ClearCursor()
     end
 end)
 
