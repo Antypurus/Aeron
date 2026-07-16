@@ -79,6 +79,7 @@ rootFrame:SetScript("OnEvent", function(_, event, unit, castGUID, spellID)
             savedSpellID = AeronDB.savedSpellID
             SetActionButton(actionButton, AeronDB.savedSpellID)
         end
+        C_ChatInfo.RegisterAddonMessagePrefix("aeron")
     end
 
     if event == "SPELL_UPDATE_COOLDOWN" then
@@ -95,6 +96,11 @@ rootFrame:SetScript("OnEvent", function(_, event, unit, castGUID, spellID)
             actionButton.cooldown:Clear()
         end
     end
+end)
+
+actionButton:SetScript('PostClick', function()
+    print("test")
+    C_ChatInfo.SendChatMessage("test_message", "AFK")
 end)
 
 -- Background
@@ -130,12 +136,10 @@ actionButton:SetScript("OnReceiveDrag", function(self)
     end
 end)
 
-SLASH_SUGMA1 = "/sugma"
-SlashCmdList["SUGMA"] = function(msg)
+SLASH_AERON1 = "/aeron"
+SlashCmdList["AERON"] = function(msg)
     print(msg)
-    AeronDB.msg = msg
 end
-
 
 --local button = CreateFrame("Button", "TestButton", frame, "UIPanelButtonTemplate")
 --button:SetText("test")
