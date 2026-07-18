@@ -9,3 +9,5 @@
 Core.lua
 characterFrame.lua
 SpellUtils.lua
+SecureAuraContainer.lua
+Dump.lua

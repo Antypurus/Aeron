@@ -36,7 +36,7 @@ AeronDB = {
 AeronCharDB = {
 }
 
-local rootFrame = CreateFrame("Frame")
+rootFrame = CreateFrame("Frame")
 
 rootFrame:RegisterEvent("PLAYER_REGEN_DISABLED") -- combat enter
 rootFrame:RegisterEvent("PLAYER_REGEN_ENABLED")  -- leaving combat
@@ -72,9 +72,6 @@ rootFrame:SetScript("OnEvent", function(_, event, unit, castGUID, spellID)
     end
 
     if event == "PLAYER_LOGIN" then
-        if AeronDB.msg ~= nil then
-            print(AeronDB.msg)
-        end
         if AeronDB.savedSpellID ~= nil then
             savedSpellID = AeronDB.savedSpellID
             SetActionButton(actionButton, AeronDB.savedSpellID)
@@ -99,7 +96,6 @@ rootFrame:SetScript("OnEvent", function(_, event, unit, castGUID, spellID)
 end)
 
 actionButton:SetScript('PostClick', function()
-    print("test")
     C_ChatInfo.SendChatMessage("test_message", "AFK")
 end)
 
@@ -139,36 +135,6 @@ end)
 SLASH_AERON1 = "/aeron"
 SlashCmdList["AERON"] = function(msg)
     print(msg)
-end
-
--- aura buttons
--- create the container
-local container = CreateFrame("AuraContainer", nil, UIParent, "CustomAuraContainerTemplate")
-container:SetSize(1, 1)
-container:SetPoint("CENTER")
-container:SetUnit("target")
-
--- filter what auras to show
--- HELPFUL = buffs, HARMFUL = debuffs
-container:AddAuraFilter("HELPFUL", { maxFrameCount = 5 })
-
--- create display buttons
-for i = 1, 5 do
-    local auraButton = CreateFrame("AuraButton", nil, container, "CustomAuraButtonTemplate")
-    auraButton:SetSize(40, 40)
-    auraButton:SetPoint("TOPLEFT", container, "TOPLEFT", (i - 1) * 42, 0)
-
-    -- bind a texture to show the icon
-    auraButton.Icon = auraButton:CreateTexture(nil, "OVERLAY")
-    auraButton.Icon:SetAllPoints(auraButton)
-    auraButton:SetIcon(auraButton.Icon)
-
-    -- bind a fontstring to show the duration
-    auraButton.Text = auraButton:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-    auraButton.Text:SetPoint("TOP", auraButton, "BOTTOM", 0, -5)
-    auraButton:SetDurationText(auraButton.Text)
-
-    container:AddAuraFrame(auraButton)
 end
 
 --local button = CreateFrame("Button", "TestButton", frame, "UIPanelButtonTemplate")
