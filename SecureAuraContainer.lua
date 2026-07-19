@@ -75,6 +75,15 @@ if (true) then
     })
     container:SetUnit("player")
 
+    local soundFile1 = "Interface\\Addons\\Aeron\\Sounds\\Purple.ogg"
+    local spellTest = 111400
+    C_UnitAuras.AddAuraAppliedSound({
+            unitToken = "player",
+            spellID = spellTest,
+            soundFileName = soundFile1,
+            outputChannel = "SFX",
+    })
+
     --[[local AttributeHandler = CreateFrame('Frame', nil, nil, 'SecureHandlerStateTemplate')
     AttributeHandler:SetScript('OnAttributeChanged', function(self, attribute, value)
         if attribute == 'unit' and container:GetUnit() ~= value then

@@ -38,5 +38,9 @@ frame:SetScript("OnEvent", function(self, event, unit)
         print("you are missing your pet")
     end
 
+    if UnitExists("pet") then
+        print("You have your pet")
+    end
+
     firstUpdateDone = true
 end)
