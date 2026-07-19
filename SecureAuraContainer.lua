@@ -39,6 +39,7 @@ if (true) then
         candidateFilters = {
             includeSpellIDs = {
                 [111400] = true,
+                [205180] = true,
             }
         },
         initializeFrame = function(auraButton)
