@@ -21,7 +21,6 @@ local function createButton(button)
     button:SetDurationText(Time, timeOptions)
 end
 
-
 local once = true
 local container = nil
 if (true) then
@@ -37,6 +36,11 @@ if (true) then
             gapX = 5, -- only necessary because of bug with item enchantments
             gapY = 5,
         },
+        candidateFilters = {
+            includeSpellIDs = {
+                [111400] = true,
+            }
+        },
         initializeFrame = function(auraButton)
             if once then
                 print("initialized secure frame")
@@ -48,6 +52,7 @@ if (true) then
             auraButton.Icon = auraButton:CreateTexture(nil, "ARTWORK")
             auraButton.Icon:SetAllPoints(auraButton)
             auraButton.Icon:SetSize(50, 50)
+            auraButton.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
             auraButton:SetIcon(auraButton.Icon)
 
             auraButton.cooldown = CreateFrame("Cooldown", nil, auraButton, "CooldownFrameTemplate")
@@ -67,14 +72,14 @@ if (true) then
             auraButton:SetApplicationCount(auraButton.stack, {})
         end
     })
-    -- container:SetUnit("player")
+    container:SetUnit("player")
 
-    local AttributeHandler = CreateFrame('Frame', nil, nil, 'SecureHandlerStateTemplate')
+    --[[local AttributeHandler = CreateFrame('Frame', nil, nil, 'SecureHandlerStateTemplate')
     AttributeHandler:SetScript('OnAttributeChanged', function(self, attribute, value)
         if attribute == 'unit' and container:GetUnit() ~= value then
             container:SetUnit(value)
             container:UpdateAllAuras()
         end
     end)
-    RegisterAttributeDriver(AttributeHandler, 'unit', '[vehicleui] vehicle; player')
+    RegisterAttributeDriver(AttributeHandler, 'unit', '[vehicleui] vehicle; player')]]--
 end

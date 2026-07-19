@@ -68,7 +68,7 @@ rootFrame:SetScript("OnEvent", function(_, event, unit, castGUID, spellID)
 
     if event == "UNIT_SPELLCAST_SUCCEEDED" and unit == "player" then
         local spellName = C_Spell.GetSpellName(spellID)
-        print(spellName)
+        print(spellName .. " | " .. spellID)
     end
 
     if event == "PLAYER_LOGIN" then
