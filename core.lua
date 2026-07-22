@@ -69,6 +69,10 @@ rootFrame:SetScript("OnEvent", function(_, event, unit, castGUID, spellID)
     if event == "UNIT_SPELLCAST_SUCCEEDED" and unit == "player" then
         local spellName = C_Spell.GetSpellName(spellID)
         print(spellName .. " | " .. spellID)
+
+        if spellID == 781 then
+            print("!!!YOU CASTED DISENGAGE!!!")
+        end
     end
 
     if event == "PLAYER_LOGIN" then
@@ -104,13 +108,14 @@ local bg = actionButton:CreateTexture(nil, "BACKGROUND")
 bg:SetAllPoints()
 bg:SetColorTexture(0, 0, 0, 0.65)
 -- Text
+local frame = CreateFrame("Frame", "MyNewTestFrame", UIParent)
 local text = actionButton:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 text:SetPoint("CENTER")
---text:SetText("Hello World")
---frame:SetScript("OnUpdate", function(self, elapse)
---local fps = GetFramerate()
---text:SetText(math.floor(fps))
---end)
+text:SetText("Hello World")
+frame:SetScript("OnUpdate", function(self, elapse)
+    local fps = GetFramerate()
+    text:SetText(math.floor(fps))
+end)
 
 local ButtonData = nil
 

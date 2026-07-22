@@ -77,7 +77,13 @@ if (true) then
 
     local soundFile1 = "Interface\\Addons\\Aeron\\Sounds\\Purple.ogg"
     local spellTest = 111400
-    C_UnitAuras.AddAuraAppliedSound({
+    C_UnitAuras.AddAuraSound(Enum.UnitAuraSoundTrigger.Added ,{
+            unitToken = "player",
+            spellID = spellTest,
+            soundFileName = soundFile1,
+            outputChannel = "SFX",
+    })
+    C_UnitAuras.AddAuraSound(Enum.UnitAuraSoundTrigger.Removed ,{
             unitToken = "player",
             spellID = spellTest,
             soundFileName = soundFile1,
