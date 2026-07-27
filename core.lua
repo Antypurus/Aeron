@@ -43,13 +43,16 @@ rootFrame:RegisterEvent("PLAYER_REGEN_ENABLED")  -- leaving combat
 rootFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 rootFrame:RegisterEvent("PLAYER_LOGIN")
 rootFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+rootFrame:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
 
+local mirrorActionButton = CreateFrame("Button", "AeronActionButton1", UIParent, "SecureActionButtonTemplate, BackdropTemplate")
 local actionButton = CreateFrame("Button", "MyAddonFrame", UIParent, "SecureActionButtonTemplate, BackdropTemplate")
+
 actionButton:SetSize(200, 200)
 actionButton:SetPoint("CENTER")
 actionButton:SetMovable(true)
 actionButton:EnableMouse(true)
-actionButton:RegisterForClicks("AnyDown")
+actionButton:RegisterForClicks("RightButtonDown")
 actionButton:RegisterForDrag("LeftButton")
 actionButton.cooldown = CreateFrame("Cooldown", nil, actionButton, "CooldownFrameTemplate")
 actionButton.cooldown:SetAllPoints(actionButton)
@@ -57,6 +60,13 @@ actionButton.cooldown:SetDrawEdge(true)
 actionButton.cooldown:SetDrawSwipe(true)
 actionButton.cooldown:SetDrawBling(true)
 actionButton.cooldown:SetHideCountdownNumbers(false)
+
+actionButton:SetScript("OnDragStart", function()
+    actionButton:StartMoving()
+end)
+actionButton:SetScript("OnDragStop", function()
+    actionButton:StopMovingOrSizing()
+end)
 
 local savedSpellID = nil
 rootFrame:SetScript("OnEvent", function(_, event, unit, castGUID, spellID)
@@ -95,6 +105,16 @@ rootFrame:SetScript("OnEvent", function(_, event, unit, castGUID, spellID)
             actionButton.cooldown:SetCooldownFromDurationObject(spellCooldownDuration)
         else
             actionButton.cooldown:Clear()
+        end
+    end
+
+    if event == "ACTIONBAR_SLOT_CHANGED" then
+        if unit == 1 then
+            local mirrorTexture = GetActionTexture(1)
+            if mirrorTexture == nil then
+                print("Could not find texture")
+            end
+            mirrorActionButton.Icon:SetTexture(mirrorTexture)
         end
     end
 end)
@@ -141,6 +161,35 @@ SLASH_AERON1 = "/aeron"
 SlashCmdList["AERON"] = function(msg)
     print(msg)
 end
+
+
+mirrorActionButton:SetSize(200, 200)
+mirrorActionButton:SetPoint("CENTER")
+mirrorActionButton:SetMovable(true)
+mirrorActionButton:EnableMouse(true)
+mirrorActionButton:RegisterForClicks("AnyDown")
+mirrorActionButton:RegisterForDrag("LeftButton")
+mirrorActionButton:SetAttribute("type", "action")
+mirrorActionButton:SetAttribute("action", 1)
+
+mirrorActionButton:SetBackdrop({
+    bgFile   = "Interface/Buttons/WHITE8X8",
+    edgeFile = "Interface/Buttons/WHITE8X8",
+    edgeSize = 1,
+})
+mirrorActionButton:SetBackdropColor(0.1, 0.1, 0.1, 0.9)
+mirrorActionButton:SetBackdropBorderColor(0, 0, 0, 1)
+
+local mirrorTexture = GetActionTexture(1)
+if mirrorTexture == nil then
+    print("Could not find texture")
+end
+mirrorActionButton.Icon = mirrorActionButton:CreateTexture(nil, "ARTWORK")
+mirrorActionButton.Icon:SetAllPoints()
+mirrorActionButton.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+mirrorActionButton.Icon:SetTexture(mirrorTexture)
+
+
 
 --local button = CreateFrame("Button", "TestButton", frame, "UIPanelButtonTemplate")
 --button:SetText("test")
